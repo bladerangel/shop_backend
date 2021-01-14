@@ -1,10 +1,10 @@
 package com.shop_backend.repositories;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import com.shop_backend.models.Product;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.stereotype.Repository;
 
-@RepositoryRestResource(collectionResourceRel = "products", path = "products")
-public interface ProductRepository extends CrudRepository<Product, Long> {
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
 
 }
