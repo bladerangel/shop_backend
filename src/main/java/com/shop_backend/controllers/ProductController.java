@@ -2,10 +2,8 @@ package com.shop_backend.controllers;
 
 import java.util.List;
 import java.util.Optional;
-
 import com.shop_backend.models.Product;
 import com.shop_backend.repositories.ProductRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,9 +38,13 @@ public class ProductController {
   }
 
   @PostMapping
-  public Product create(@Valid @RequestBody Product product) {
-    product.setId(null);
-    return productRepository.save(product);
+  public ResponseEntity<Product> create(@Valid @RequestBody Product product) {
+    try {
+      product.setId(null);
+      return ResponseEntity.ok().body(productRepository.save(product));
+    } catch (Exception error) {
+      return ResponseEntity.notFound().build();
+    }
   }
 
   @PutMapping("/{id}")
