@@ -18,7 +18,7 @@ import lombok.Data;
 public class PurchaseOrder {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @OneToOne(optional = false, cascade = CascadeType.ALL)
