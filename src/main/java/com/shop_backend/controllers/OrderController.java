@@ -7,6 +7,7 @@ import com.shop_backend.models.PurchaseOrder;
 import com.shop_backend.repositories.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +23,13 @@ public class OrderController {
   private OrderRepository orderRepository;
 
   @GetMapping
+  @PreAuthorize("hasRole('USER')")
   public List<PurchaseOrder> findAll() {
     return orderRepository.findAll();
   }
 
   @GetMapping(value = "/{id}")
+  @PreAuthorize("hasRole('USER')")
   public ResponseEntity<PurchaseOrder> findOne(@PathVariable(value = "id") long id) {
 
     Optional<PurchaseOrder> product = orderRepository.findById(id);
@@ -38,6 +41,7 @@ public class OrderController {
   }
 
   @PostMapping
+  @PreAuthorize("hasRole('USER')")
   public ResponseEntity<PurchaseOrder> create(@Valid @RequestBody PurchaseOrder order) {
     try {
       order.setId(null);
