@@ -9,7 +9,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import org.springframework.format.annotation.DateTimeFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,8 +33,14 @@ public class PurchaseOrder {
   @JoinColumn(name = "cart_id", referencedColumnName = "id", nullable = false)
   private Cart cart;
 
+  @NotNull
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @Temporal(TemporalType.DATE)
   private Date dateTime;
+
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "authUser_id", referencedColumnName = "id", nullable = false)
+  @JsonBackReference
+  private AuthUser authUser;
 
 }

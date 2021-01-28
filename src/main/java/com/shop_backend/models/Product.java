@@ -26,21 +26,21 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotBlank()
+  @NotBlank
   private String title;
 
-  @NotBlank()
+  @NotBlank
   @Size(min = 10)
   private String description;
 
   @DecimalMin(value = "0.0")
   private Double price;
 
-  @NotBlank()
-  @URL()
+  @NotBlank
+  @URL
   private String imageUrl;
 
-  @NotNull()
+  @NotNull
   private Boolean isFavorite;
 
   @JsonIgnore
