@@ -9,10 +9,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Role {
 
   @Id
@@ -24,5 +28,5 @@ public class Role {
 
   @JsonIgnore
   @ManyToMany(mappedBy = "roles")
-  private List<User> users;
+  private List<AuthUser> users;
 }
