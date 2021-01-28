@@ -18,6 +18,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.shop_backend.validations.UserValidation;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -54,6 +56,7 @@ public class AuthUser implements UserDetails {
   @Email
   private String email;
 
+  @JsonIgnore
   @NotBlank(groups = { UserValidation.Login.class, UserValidation.Register.class })
   @Size(max = 100)
   private String password;
