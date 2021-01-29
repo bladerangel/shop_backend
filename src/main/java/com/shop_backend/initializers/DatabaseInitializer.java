@@ -9,7 +9,6 @@ import com.shop_backend.models.AuthUser;
 import com.shop_backend.repositories.RoleRepository;
 import com.shop_backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,9 +19,6 @@ public class DatabaseInitializer {
 
   @Autowired
   private RoleRepository roleRepository;
-
-  @Autowired
-  private PasswordEncoder passwordEncoder;
 
   @PostConstruct
   public void init() {
@@ -38,7 +34,7 @@ public class DatabaseInitializer {
     admin.setName("admin");
     admin.setUsername("admin");
     admin.setEmail("admin@gmail.com");
-    admin.setPassword(passwordEncoder.encode("admin"));
+    admin.setPassword("admin");
     admin.setRoles(roles);
     userRepository.save(admin);
   }

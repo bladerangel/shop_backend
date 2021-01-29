@@ -18,7 +18,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,9 +40,6 @@ public class UserController {
   RoleRepository roleRepository;
 
   @Autowired
-  PasswordEncoder passwordEncoder;
-
-  @Autowired
   JwtTokenProvider tokenProvider;
 
   @PostMapping("/signin")
@@ -60,7 +56,7 @@ public class UserController {
   }
 
   @PostMapping("/signup")
-  public ResponseEntity<?> registerUser(
+  public ResponseEntity<AuthUser> registerUser(
       @Validated(value = { UserValidation.Register.class }) @RequestBody AuthUser user) {
     if (userRepository.existsByUsername(user.getUsername())) {
       return ResponseEntity.badRequest().build();
@@ -71,19 +67,19 @@ public class UserController {
       return ResponseEntity.badRequest().build();
     }
 
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
-
     Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
         .orElseThrow(() -> new RuntimeException("User Role not set."));
 
     user.setRoles(Collections.singletonList(userRole));
 
-    userRepository.save(user);
-
     URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/{username}")
         .buildAndExpand(user.getUsername()).toUri();
 
-    return ResponseEntity.created(location).body("User registered successfully");
+    try {
+      return ResponseEntity.created(location).body(userRepository.save(user));
+    } catch (Exception error) {
+      return ResponseEntity.notFound().build();
+    }
   }
 
   @GetMapping

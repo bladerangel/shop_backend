@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,13 +19,15 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.shop_backend.listeners.AuthUserListener;
 import com.shop_backend.validations.UserValidation;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +35,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "username" }),
     @UniqueConstraint(columnNames = { "email" }) })
+@EntityListeners(AuthUserListener.class)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -56,7 +60,7 @@ public class AuthUser implements UserDetails {
   @Email
   private String email;
 
-  @JsonIgnore
+  @JsonProperty(access = Access.WRITE_ONLY)
   @NotBlank(groups = { UserValidation.Login.class, UserValidation.Register.class })
   @Size(max = 100)
   private String password;
@@ -93,4 +97,5 @@ public class AuthUser implements UserDetails {
   public boolean isEnabled() {
     return true;
   }
+
 }
