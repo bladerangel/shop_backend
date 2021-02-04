@@ -12,6 +12,8 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -36,6 +38,7 @@ public class PurchaseOrder {
   @NotNull
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @Temporal(TemporalType.DATE)
+  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
   private Date dateTime;
 
   @ManyToOne(optional = false)

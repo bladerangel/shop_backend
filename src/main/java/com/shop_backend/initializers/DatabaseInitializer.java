@@ -32,7 +32,6 @@ public class DatabaseInitializer {
 
     AuthUser admin = new AuthUser();
     admin.setName("admin");
-    admin.setUsername("admin");
     admin.setEmail("admin@gmail.com");
     admin.setPassword("admin");
     admin.setRoles(roles);

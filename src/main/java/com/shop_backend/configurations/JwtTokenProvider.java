@@ -38,9 +38,18 @@ public class JwtTokenProvider {
         .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
   }
 
+  public String getBearerToken(String bearerToken) {
+    return bearerToken.substring(7, bearerToken.length());
+  }
+
   public Long getUserIdFromJWT(String token) {
     Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
     return Long.parseLong(claims.getSubject());
+  }
+
+  public Date getExpiryDateFromJWT(String token) {
+    Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+    return claims.getExpiration();
   }
 
   public boolean validateToken(String authToken) {

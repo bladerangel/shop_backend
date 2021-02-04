@@ -1,8 +1,14 @@
 package com.shop_backend.controllers;
 
 import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import com.shop_backend.configurations.JwtTokenProvider;
 import com.shop_backend.models.Role;
@@ -43,25 +49,33 @@ public class UserController {
   JwtTokenProvider tokenProvider;
 
   @PostMapping("/signin")
-  public ResponseEntity<String> authenticateUser(
-      @Validated(value = { UserValidation.Login.class }) @RequestBody AuthUser user) {
+  public ResponseEntity<Object> authenticateUser(
+      @Validated(value = { UserValidation.Login.class }) @RequestBody AuthUser user) throws ParseException {
 
     Authentication authentication = authenticationManager
-        .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
     String jwt = tokenProvider.generateToken(authentication);
-    return ResponseEntity.ok(jwt);
+
+    Date expiryDate = tokenProvider.getExpiryDateFromJWT(jwt);
+
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
+    Optional<AuthUser> userFound = userRepository.findByEmail(user.getEmail());
+    Map<String, Object> response = new HashMap<>();
+    response.put("user", userFound);
+    response.put("token", jwt);
+    response.put("expiryDate", formatter.format(expiryDate));
+
+    return ResponseEntity.ok(response);
   }
 
   @PostMapping("/signup")
   public ResponseEntity<AuthUser> registerUser(
       @Validated(value = { UserValidation.Register.class }) @RequestBody AuthUser user) {
-    if (userRepository.existsByUsername(user.getUsername())) {
-      return ResponseEntity.badRequest().build();
-
-    }
+    user.setId(null);
 
     if (userRepository.existsByEmail(user.getEmail())) {
       return ResponseEntity.badRequest().build();

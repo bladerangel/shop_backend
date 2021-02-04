@@ -19,6 +19,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -33,8 +34,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "username" }),
-    @UniqueConstraint(columnNames = { "email" }) })
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "email" }) })
 @EntityListeners(AuthUserListener.class)
 @Data
 @AllArgsConstructor
@@ -47,15 +47,11 @@ public class AuthUser implements UserDetails {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotBlank(groups = { UserValidation.Register.class })
+  // @NotBlank(groups = { UserValidation.Register.class })
   @Size(max = 40)
   private String name;
 
   @NotBlank(groups = { UserValidation.Login.class, UserValidation.Register.class })
-  @Size(max = 15)
-  private String username;
-
-  @NotBlank(groups = { UserValidation.Register.class })
   @Size(max = 40)
   @Email
   private String email;
@@ -71,29 +67,44 @@ public class AuthUser implements UserDetails {
 
   @OneToMany(mappedBy = "authUser", cascade = CascadeType.ALL)
   @JsonManagedReference
-  List<PurchaseOrder> purchaseOrders;
+  private List<PurchaseOrder> purchaseOrders;
+
+  @ManyToMany
+  @JoinTable(name = "user_favoriteProduct", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "favoriteProduct_id"))
+  private List<Product> favoriteProducts;
 
   @Override
+  @JsonIgnore
+  public String getUsername() {
+    return null;
+  }
+
+  @Override
+  @JsonIgnore
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
   }
 
   @Override
+  @JsonIgnore
   public boolean isAccountNonExpired() {
     return true;
   }
 
   @Override
+  @JsonIgnore
   public boolean isAccountNonLocked() {
     return true;
   }
 
   @Override
+  @JsonIgnore
   public boolean isCredentialsNonExpired() {
     return true;
   }
 
   @Override
+  @JsonIgnore
   public boolean isEnabled() {
     return true;
   }
