@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       var cors = new CorsConfiguration();
       cors.setAllowedOrigins(List.of("*"));
       cors.setAllowedMethods(List.of("PUT", "DELETE", "POST", "GET"));
+      cors.setAllowedHeaders(List.of("*"));
       return cors;
     }).and().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and().sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests().antMatchers("/user/**")
