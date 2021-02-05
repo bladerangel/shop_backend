@@ -10,7 +10,6 @@
 	<groupId>com</groupId>
 	<artifactId>shop_backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
 	<name>shop_backend</name>
 	<description>Demo project for Spring Boot</description>
 
