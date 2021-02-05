@@ -12,7 +12,7 @@ public class CorsConfiguration implements WebMvcConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
 
-    registry.addMapping("/**").allowedOrigins("https://bladerangel.github.io/shop_web_app/*").allowedMethods("PUT",
+    registry.addMapping("/**").allowedOrigins("https://bladerangel.github.io/shop_web_app").allowedMethods("PUT",
         "DELETE", "POST", "GET");
   }
 }
