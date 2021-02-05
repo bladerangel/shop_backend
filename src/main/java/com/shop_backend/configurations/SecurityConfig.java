@@ -1,5 +1,7 @@
 package com.shop_backend.configurations;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 @EnableWebSecurity
 @Configuration
@@ -48,7 +51,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.cors().and().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and().sessionManagement()
+    http.cors().configurationSource(request -> {
+      var cors = new CorsConfiguration();
+      cors.setAllowedOrigins(List.of("*"));
+      cors.setAllowedMethods(List.of("PUT", "DELETE", "POST", "GET"));
+      return cors;
+    }).and().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and().sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests().antMatchers("/user/**")
         .permitAll().anyRequest().authenticated();
 
